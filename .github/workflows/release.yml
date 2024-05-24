@@ -1,0 +1,55 @@
+name: test_win
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  build_linux:
+    name: BuildLinux
+    uses: ./.github/workflows/build_linux.yml
+    with:
+      name: ${{ github.ref_name }}
+  build_windows:
+    name: BuildWindows
+    uses: ./.github/workflows/build_windows.yml
+    with:
+      name: ${{ github.ref_name }}
+  release:
+    permissions: write-all
+    name: Release
+    needs: [build_linux, build_windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Linux
+        uses: actions/download-artifact@v4
+        with:
+          name: Papercraft-${{ github.ref_name }}-x86_64.AppImage
+      - name: Download Win32
+        uses: actions/download-artifact@v4
+        with:
+          name: Papercraft-${{ github.ref_name }}-win32.zip
+      - name: Download Win64
+        uses: actions/download-artifact@v4
+        with:
+          name: Papercraft-${{ github.ref_name }}-win64.zip
+
+      - name: Upload Linux to release
+        uses: svenstaro/upload-release-action@2.9.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          file: Papercraft-${{ github.ref_name }}-x86_64.AppImage
+      - name: Upload Win32 to release
+        uses: svenstaro/upload-release-action@2.9.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          file: Papercraft-${{ github.ref_name }}-win32.zip
+      - name: Upload Win64 to release
+        uses: svenstaro/upload-release-action@2.9.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          file: Papercraft-${{ github.ref_name }}-win64.zip
