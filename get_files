@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# I use ArchLinux, btw
+
+PKGS="\
+mingw-w64-bzip2 \
+mingw-w64-brotli
+mingw-w64-freetype2 \
+mingw-w64-gettext \
+mingw-w64-glib2 \
+mingw-w64-graphite \
+mingw-w64-harfbuzz \
+mingw-w64-libiconv \
+mingw-w64-pcre2 \
+"
+
+cd $(dirname $(realpath $0))
+rm -r usr
+pacman -Qlq $PKGS | grep -v /share/ | grep -v /$ | grep -v exe$ | sort -u | xargs tar -c | tar -x
