@@ -6,9 +6,6 @@ on:
       name:
         required: true
         type: string
-      hash:
-        required: true
-        type: string
 
 jobs:
   papercraft:

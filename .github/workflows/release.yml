@@ -11,17 +11,20 @@ jobs:
     uses: ./.github/workflows/build_linux.yml
     with:
       name: ${{ github.ref_name }}
-      hash: ${{ github.sha }}
-  build_windows:
-    name: BuildWindows
-    uses: ./.github/workflows/build_windows.yml
+  build_win32:
+    name: BuildWin32
+    uses: ./.github/workflows/build_win32.yml
     with:
       name: ${{ github.ref_name }}
-      hash: ${{ github.sha }}
+  build_win64:
+    name: BuildWin64
+    uses: ./.github/workflows/build_win64.yml
+    with:
+      name: ${{ github.ref_name }}
   release:
     permissions: write-all
     name: Release
-    needs: [build_linux, build_windows]
+    needs: [build_linux, build_win32, build_win64]
     runs-on: ubuntu-latest
     steps:
       - name: Download Linux

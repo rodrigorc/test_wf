@@ -1,0 +1,66 @@
+name: BuildWin32
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+
+jobs:
+  papercraft:
+    name: ${{ inputs.name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install pre-requisites
+        run: |
+          rustup target add i686-pc-windows-gnu
+          sudo apt-get install -y gcc-mingw-w64 g++-mingw-w64 libz-mingw-w64-dev
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Checkout MinGW
+        uses: actions/checkout@v4
+        with:
+          ref: mingw
+          path: mingw
+      - name: Install MinGW
+        run: |
+          sudo rsync -ra mingw/ /
+          sudo ln -s /usr/lib/gcc/i686-w64-mingw32/10-win32/include/c++ /usr/i686-w64-mingw32/include/c++
+      - name: Build Win32
+        run: |
+          env PKG_CONFIG_ALLOW_CROSS="1" \
+              PKG_CONFIG_LIBDIR="/usr/i686-w64-mingw32/lib/pkgconfig/" \
+              WINDRES=i686-w64-mingw32-windres \
+              RUSTFLAGS="-Clink-arg=-mwindows" \
+              CARGO_TARGET_DIR=win32target \
+              cargo build --release --target i686-pc-windows-gnu
+      - name: Pkg win32
+        run: |
+          mkdir -p pkg32/papercraft
+          cd pkg32/papercraft
+          ln -s ../../win32target/i686-pc-windows-gnu/release/papercraft.exe .
+          ln -s /usr/lib/gcc/i686-w64-mingw32/10-win32/libstdc++-6.dll .
+          ln -s /usr/lib/gcc/i686-w64-mingw32/10-win32/libgcc_s_dw2-1.dll .
+          ln -s /usr/lib/gcc/i686-w64-mingw32/10-win32/libssp-0.dll .
+          ln -s /usr/i686-w64-mingw32/bin/libfreetype-6.dll .
+          ln -s /usr/i686-w64-mingw32/bin/libbrotlidec.dll .
+          ln -s /usr/i686-w64-mingw32/bin/libbrotlicommon.dll .
+          ln -s /usr/i686-w64-mingw32/bin/libharfbuzz-0.dll .
+          ln -s /usr/i686-w64-mingw32/bin/libgraphite2.dll .
+          ln -s /usr/i686-w64-mingw32/bin/libglib-2.0-0.dll .
+          ln -s /usr/i686-w64-mingw32/bin/libpcre2-8-0.dll .
+          ln -s /usr/i686-w64-mingw32/bin/libintl-8.dll .
+          ln -s /usr/i686-w64-mingw32/bin/libiconv-2.dll .
+          ln -s /usr/i686-w64-mingw32/bin/libbz2-1.dll .
+          ln -s /usr/i686-w64-mingw32/lib/zlib1.dll .
+          cd ..
+          zip -r "../Papercraft-${{ inputs.name }}-win32.zip" papercraft
+      - name: Upload artifact win32
+        uses: actions/upload-artifact@v4
+        with:
+          name: Papercraft-${{ inputs.name }}-win32.zip
+          path: Papercraft-${{ inputs.name }}-win32.zip
+          if-no-files-found: error
