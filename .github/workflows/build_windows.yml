@@ -15,12 +15,6 @@ jobs:
     name: ${{ inputs.name }}
     runs-on: ubuntu-latest
     steps:
-      - name: Cache Rust and Cargo
-        uses: actions/cache@v3
-        with:
-          key: cargo-${{ inputs.hash }}
-          path: |
-            ~/.cargo
       - name: Install pre-requisites
         run: |
           rustup target add i686-pc-windows-gnu x86_64-pc-windows-gnu

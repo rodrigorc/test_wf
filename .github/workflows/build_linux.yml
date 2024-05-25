@@ -13,14 +13,9 @@ on:
 jobs:
   papercraft:
     name: ${{ inputs.name }}
+    # Oldest LTS ubuntu still with support
     runs-on: ubuntu-20.04
     steps:
-      - name: Cache Rust and Cargo
-        uses: actions/cache@v3
-        with:
-          key: cargo-${{ inputs.hash }}
-          path: |
-            ~/.cargo
       - name: Install LinuxDeploy
         uses: miurahr/install-linuxdeploy-action@v1
         with:
@@ -33,11 +28,14 @@ jobs:
         run: |
           export PATH="$(pwd)/bin:$PATH"
           mkdir bin
+          # Old G++ doesn't support -std=c++20, but it does support -std=c++2a
+          # This script hacks that
           cp distro/docker/g++ bin/g++
           cp distro/docker/g++ bin/c++
           cargo build
           export VERSION="${{ inputs.name }}"
           export ARCH=x86_64
+          # Create the directory tree
           linuxdeploy-x86_64.AppImage --appdir=AppDir
           mkdir -p AppDir/usr/share/metainfo/
           cp distro/papercraft.desktop AppDir/usr/share/applications/
