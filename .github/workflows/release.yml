@@ -1,4 +1,4 @@
-name: test_win
+name: Release
 
 on:
   workflow_dispatch:
@@ -11,11 +11,13 @@ jobs:
     uses: ./.github/workflows/build_linux.yml
     with:
       name: ${{ github.ref_name }}
+      hash: ${{ github.sha }}
   build_windows:
     name: BuildWindows
     uses: ./.github/workflows/build_windows.yml
     with:
       name: ${{ github.ref_name }}
+      hash: ${{ github.sha }}
   release:
     permissions: write-all
     name: Release

@@ -6,12 +6,21 @@ on:
       name:
         required: true
         type: string
+      hash:
+        required: true
+        type: string
 
 jobs:
   papercraft:
     name: ${{ inputs.name }}
     runs-on: ubuntu-20.04
     steps:
+      - name: Cache Rust and Cargo
+        uses: actions/cache@v3
+        with:
+          key: cargo-${{ inputs.hash }}
+          path: |
+            ~/.cargo
       - name: Install LinuxDeploy
         uses: miurahr/install-linuxdeploy-action@v1
         with:
