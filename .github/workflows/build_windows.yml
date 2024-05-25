@@ -30,22 +30,22 @@ jobs:
           sudo rsync -ra mingw/ /
           sudo ln -s /usr/lib/gcc/i686-w64-mingw32/10-win32/include/c++ /usr/i686-w64-mingw32/include/c++
           sudo ln -s /usr/lib/gcc/x86_64-w64-mingw32/10-win32/include/c++ /usr/x86_64-w64-mingw32/include/c++
-      - name: Build Win32/Win64
+      - name: Build Win32
         run: |
-          parallel --halt now,fail=1 << .
           env PKG_CONFIG_ALLOW_CROSS="1" \
               PKG_CONFIG_LIBDIR="/usr/i686-w64-mingw32/lib/pkgconfig/" \
               WINDRES=i686-w64-mingw32-windres \
               RUSTFLAGS="-Clink-arg=-mwindows" \
               CARGO_TARGET_DIR=win32target \
               cargo build --release --target i686-pc-windows-gnu
+      - name: Build Win64
+        run: |
           env PKG_CONFIG_ALLOW_CROSS="1" \
               PKG_CONFIG_LIBDIR="/usr/x86_64-w64-mingw32/lib/pkgconfig/" \
               WINDRES=x86_64-w64-mingw32-windres \
               RUSTFLAGS="-Clink-arg=-mwindows" \
               CARGO_TARGET_DIR=win64target \
               cargo build --release --target x86_64-pc-windows-gnu
-          .
       - name: Pkg win32
         run: |
           mkdir -p pkg32/papercraft
