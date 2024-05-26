@@ -10,20 +10,25 @@ on:
 jobs:
   papercraft:
     name: ${{ inputs.name }}
-    runs-on: macos-12
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+      - name: Rustup
+        run: |
+          rustup target add x86_64-apple-darwin
       - name: Build
         run: |
-          cargo build --release
-          ls -l target/release
+          cargo build --release --target=x86_64-apple-darwin
+          cargo build --release --target=aarch64-apple-darwin
+          ls -l target/
+          lipo -create target/aarch64-apple-darwin/release/papercraft target/x86_64-apple-darwin/release/papercraft -output papercraft-universal
       - name: Upload artifact MacOS
         uses: actions/upload-artifact@v4
         with:
-          name: Papercraft-${{ inputs.name }}-macos
-          path: target/release/papercraft
+          name: Papercraft-${{ inputs.name }}-macOS-universal
+          path: papercraft-universal
           if-no-files-found: error
 
