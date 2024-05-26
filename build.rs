@@ -61,9 +61,10 @@ fn build_imgui_filedialog() -> Result<()> {
 
     bindgen::Builder::default()
         .clang_args(["-x", "c++"])
+        .clang_args(["-std=c++20"])
         .clang_arg(format!("-I{dep_imgui_path}"))
         .clang_arg(format!("-I{igfd_path}"))
-        .header("ImGuiFileDialogWrapper.h")
+        .header("ImGuiFileDialogWrapper.hh")
         .allowlist_recursively(false)
         .allowlist_function("free") // standard libc free to release strings
         //.allowlist_type("IGFD_.*")
@@ -86,6 +87,7 @@ fn build_imgui_filedialog() -> Result<()> {
 
     cc::Build::new()
         .cpp(true)
+        .std("c++20")
         .include(dep_imgui_path)
         .include(igfd_path)
         .define("USE_EXPLORATION_BY_KEYS", None)
