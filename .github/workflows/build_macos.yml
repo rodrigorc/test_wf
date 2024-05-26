@@ -10,7 +10,7 @@ on:
 jobs:
   papercraft:
     name: ${{ inputs.name }}
-    runs-on: macos-latest
+    runs-on: macos-12
     steps:
       - name: Checkout
         uses: actions/checkout@v4
