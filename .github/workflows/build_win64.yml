@@ -20,15 +20,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: 'recursive'
-      - name: Checkout MinGW
-        uses: actions/checkout@v4
-        with:
-          ref: mingw
-          path: mingw
-      - name: Install MinGW
-        run: |
-          sudo rsync -ra mingw/ /
-          sudo ln -s /usr/lib/gcc/x86_64-w64-mingw32/10-win32/include/c++ /usr/x86_64-w64-mingw32/include/c++
       - name: Build Win64
         run: |
           env PKG_CONFIG_ALLOW_CROSS="1" \
@@ -44,18 +35,6 @@ jobs:
           ln -s ../../win64target/x86_64-pc-windows-gnu/release/papercraft.exe .
           ln -s /usr/lib/gcc/x86_64-w64-mingw32/10-win32/libstdc++-6.dll .
           ln -s /usr/lib/gcc/x86_64-w64-mingw32/10-win32/libgcc_s_seh-1.dll .
-          ln -s /usr/lib/gcc/x86_64-w64-mingw32/10-win32/libssp-0.dll .
-          ln -s /usr/x86_64-w64-mingw32/bin/libfreetype-6.dll .
-          ln -s /usr/x86_64-w64-mingw32/bin/libbrotlidec.dll .
-          ln -s /usr/x86_64-w64-mingw32/bin/libbrotlicommon.dll .
-          ln -s /usr/x86_64-w64-mingw32/bin/libharfbuzz-0.dll .
-          ln -s /usr/x86_64-w64-mingw32/bin/libgraphite2.dll .
-          ln -s /usr/x86_64-w64-mingw32/bin/libglib-2.0-0.dll .
-          ln -s /usr/x86_64-w64-mingw32/bin/libpcre2-8-0.dll .
-          ln -s /usr/x86_64-w64-mingw32/bin/libintl-8.dll .
-          ln -s /usr/x86_64-w64-mingw32/bin/libiconv-2.dll .
-          ln -s /usr/x86_64-w64-mingw32/bin/libbz2-1.dll .
-          ln -s /usr/x86_64-w64-mingw32/lib/zlib1.dll .
           cd ..
           zip -r "../Papercraft-${{ inputs.name }}-win64.zip" papercraft
       - name: Upload artifact win64
