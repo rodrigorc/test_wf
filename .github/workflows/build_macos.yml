@@ -1,7 +1,7 @@
 name: BuildMacOS
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       name:
         required: true

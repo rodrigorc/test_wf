@@ -25,10 +25,15 @@ jobs:
     uses: ./.github/workflows/build_win64.yml
     with:
       name: ${{ inputs.tag_name }}
+  build_macos:
+    name: BuildMacOS
+    uses: ./.github/workflows/build_macos.yml
+    with:
+      name: ${{ inputs.tag_name }}
   release:
     permissions: write-all
     name: Release
-    needs: [build_linux, build_win32, build_win64]
+    needs: [build_linux, build_win32, build_win64, build_macos]
     runs-on: ubuntu-latest
     steps:
       - name: Download Linux
@@ -43,6 +48,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Papercraft-${{ inputs.tag_name }}-win64.zip
+      - name: Download MacOS
+        uses: actions/download-artifact@v4
+        with:
+          name: Papercraft-${{ inputs.tag_name }}-macOS-universal
 
       - name: Upload Linux to release
         uses: svenstaro/upload-release-action@2.9.0
@@ -62,3 +71,10 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ inputs.tag_name }}
           file: Papercraft-${{ inputs.tag_name }}-win64.zip
+      - name: Upload MacOS to release
+        uses: svenstaro/upload-release-action@2.9.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ inputs.tag_name }}
+          file: Papercraft-${{ inputs.tag_name }}-macOS-universal
+
