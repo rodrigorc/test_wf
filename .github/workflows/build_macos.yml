@@ -1,0 +1,23 @@
+name: BuildMacOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        required: true
+        type: string
+
+jobs:
+  papercraft:
+    name: ${{ inputs.name }}
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Build
+        run: |
+          cargo build --release
+
+
