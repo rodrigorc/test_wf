@@ -2,6 +2,10 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      tag_name:
+        type: string
+        required: true
   release:
     types: [published]
 
@@ -10,17 +14,17 @@ jobs:
     name: BuildLinux
     uses: ./.github/workflows/build_linux.yml
     with:
-      name: ${{ github.ref_name }}
+      name: ${{ inputs.name }}
   build_win32:
     name: BuildWin32
     uses: ./.github/workflows/build_win32.yml
     with:
-      name: ${{ github.ref_name }}
+      name: ${{ inputs.name }}
   build_win64:
     name: BuildWin64
     uses: ./.github/workflows/build_win64.yml
     with:
-      name: ${{ github.ref_name }}
+      name: ${{ inputs.name }}
   release:
     permissions: write-all
     name: Release
@@ -30,31 +34,31 @@ jobs:
       - name: Download Linux
         uses: actions/download-artifact@v4
         with:
-          name: Papercraft-${{ github.ref_name }}-x86_64.AppImage
+          name: Papercraft-${{ inputs.name }}-x86_64.AppImage
       - name: Download Win32
         uses: actions/download-artifact@v4
         with:
-          name: Papercraft-${{ github.ref_name }}-win32.zip
+          name: Papercraft-${{ inputs.name }}-win32.zip
       - name: Download Win64
         uses: actions/download-artifact@v4
         with:
-          name: Papercraft-${{ github.ref_name }}-win64.zip
+          name: Papercraft-${{ inputs.name }}-win64.zip
 
       - name: Upload Linux to release
         uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-          file: Papercraft-${{ github.ref_name }}-x86_64.AppImage
+          tag: ${{ inputs.name }}
+          file: Papercraft-${{ inputs.name }}-x86_64.AppImage
       - name: Upload Win32 to release
         uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-          file: Papercraft-${{ github.ref_name }}-win32.zip
+          tag: ${{ inputs.name }}
+          file: Papercraft-${{ inputs.name }}-win32.zip
       - name: Upload Win64 to release
         uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-          file: Papercraft-${{ github.ref_name }}-win64.zip
+          tag: ${{ inputs.name }}
+          file: Papercraft-${{ inputs.name }}-win64.zip
