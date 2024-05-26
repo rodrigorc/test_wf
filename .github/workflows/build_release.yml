@@ -53,25 +53,8 @@ jobs:
       - name: Upload Linux to release
         uses: svenstaro/upload-release-action@2.9.0
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ inputs.tag_name }}
-          file: Papercraft-${{ inputs.tag_name }}-x86_64.AppImage
-      - name: Upload Win32 to release
-        uses: svenstaro/upload-release-action@2.9.0
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.tag_name }}
-          file: Papercraft-${{ inputs.tag_name }}-win32.zip
-      - name: Upload Win64 to release
-        uses: svenstaro/upload-release-action@2.9.0
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.tag_name }}
-          file: Papercraft-${{ inputs.tag_name }}-win64.zip
-      - name: Upload MacOS to release
-        uses: svenstaro/upload-release-action@2.9.0
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.tag_name }}
-          file: Papercraft-${{ inputs.tag_name }}-macOS-universal
+          prerelease: true
+          file_glob: true
+          file: Papercraft-${{ inputs.tag_name }}-*
 
