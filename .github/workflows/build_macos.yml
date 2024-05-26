@@ -27,11 +27,11 @@ jobs:
           cargo build --release --target=aarch64-apple-darwin
       - name: Build Universal app
         run: |
-          lipo -create target/aarch64-apple-darwin/release/papercraft target/x86_64-apple-darwin/release/papercraft -output papercraft-universal
+          lipo -create target/aarch64-apple-darwin/release/papercraft target/x86_64-apple-darwin/release/papercraft -output Papercraft-${{ inputs.name }}-macOS-universal
       - name: Upload artifact MacOS
         uses: actions/upload-artifact@v4
         with:
           name: Papercraft-${{ inputs.name }}-macOS-universal
-          path: papercraft-universal
+          path: Papercraft-${{ inputs.name }}-macOS-universal
           if-no-files-found: error
 

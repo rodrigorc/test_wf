@@ -1,80 +1,15 @@
 name: Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag_name:
-        type: string
-        required: true
   release:
     types: [published]
 
 jobs:
-  build_linux:
-    name: BuildLinux
-    uses: ./.github/workflows/build_linux.yml
+  build_release:
+    permissions:
+      contents: write
+    name: BuildRelease
+    uses: ./.github/workflows/build_release.yml
     with:
-      name: ${{ inputs.tag_name }}
-  build_win32:
-    name: BuildWin32
-    uses: ./.github/workflows/build_win32.yml
-    with:
-      name: ${{ inputs.tag_name }}
-  build_win64:
-    name: BuildWin64
-    uses: ./.github/workflows/build_win64.yml
-    with:
-      name: ${{ inputs.tag_name }}
-  build_macos:
-    name: BuildMacOS
-    uses: ./.github/workflows/build_macos.yml
-    with:
-      name: ${{ inputs.tag_name }}
-  release:
-    permissions: write-all
-    name: Release
-    needs: [build_linux, build_win32, build_win64, build_macos]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Linux
-        uses: actions/download-artifact@v4
-        with:
-          name: Papercraft-${{ inputs.tag_name }}-x86_64.AppImage
-      - name: Download Win32
-        uses: actions/download-artifact@v4
-        with:
-          name: Papercraft-${{ inputs.tag_name }}-win32.zip
-      - name: Download Win64
-        uses: actions/download-artifact@v4
-        with:
-          name: Papercraft-${{ inputs.tag_name }}-win64.zip
-      - name: Download MacOS
-        uses: actions/download-artifact@v4
-        with:
-          name: Papercraft-${{ inputs.tag_name }}-macOS-universal
-
-      - name: Upload Linux to release
-        uses: svenstaro/upload-release-action@2.9.0
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.tag_name }}
-          file: Papercraft-${{ inputs.tag_name }}-x86_64.AppImage
-      - name: Upload Win32 to release
-        uses: svenstaro/upload-release-action@2.9.0
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.tag_name }}
-          file: Papercraft-${{ inputs.tag_name }}-win32.zip
-      - name: Upload Win64 to release
-        uses: svenstaro/upload-release-action@2.9.0
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.tag_name }}
-          file: Papercraft-${{ inputs.tag_name }}-win64.zip
-      - name: Upload MacOS to release
-        uses: svenstaro/upload-release-action@2.9.0
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ inputs.tag_name }}
-          file: Papercraft-${{ inputs.tag_name }}-macOS-universal
+      tag_name: ${{ github.ref_name }}
 
