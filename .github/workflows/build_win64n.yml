@@ -1,0 +1,34 @@
+name: BuildWin64n
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        required: true
+        type: string
+
+jobs:
+  papercraft:
+    name: ${{ inputs.name }}
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: VS
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Build Win64
+        run: |
+          $env:RUSTFLAGS="-Ctarget-feature=+crt-static"
+          $env:WINDRES="rc.exe"
+          cargo build --release --target=x86_64-pc-windows-msvc
+      - name: Pkg win64
+        run: |
+          copy target/x86_64-pc-windows-msvc/release/papercraft.exe Papercraft-${{ inputs.name }}-win64.exe
+      - name: Upload artifact win64
+        uses: actions/upload-artifact@v4
+        with:
+          name: Papercraft-${{ inputs.name }}-win64.exe
+          path: Papercraft-${{ inputs.name }}-win64.exe
+          if-no-files-found: error
