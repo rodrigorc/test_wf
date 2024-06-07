@@ -4,8 +4,13 @@ on:
   workflow_call:
     inputs:
       name:
-        required: true
         type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      name:
+        type: string
+        required: true
 
 jobs:
   papercraft:
@@ -19,19 +24,39 @@ jobs:
       - name: Rustup
         run: |
           rustup target add x86_64-apple-darwin
+      - name: Create DMG
+        run: |
+          brew install create-dmg
       - name: Build x86
         run: |
           cargo build --release --target=x86_64-apple-darwin
       - name: Build Arm86
         run: |
           cargo build --release --target=aarch64-apple-darwin
-      - name: Build Universal app
+      - name: Build DMG
         run: |
-          lipo -create target/aarch64-apple-darwin/release/papercraft target/x86_64-apple-darwin/release/papercraft -output Papercraft-${{ inputs.name }}-macOS-universal
+          mkdir -p app_folder/Papercraft/Papercraft.app/Contents/MacOS
+          mkdir -p app_folder/Papercraft/Papercraft.app/Contents/Resources
+          lipo -create target/aarch64-apple-darwin/release/papercraft target/x86_64-apple-darwin/release/papercraft -output \
+            app_folder/Papercraft/Papercraft.app/Contents/MacOS/papercraft
+          cp distro/macos/PkgInfo app_folder/Papercraft/Papercraft.app/Contents/
+          cp distro/macos/Info.plist app_folder/Papercraft/Papercraft.app/Contents/
+          cp distro/macos/papercraft.icns app_folder/Papercraft/Papercraft.app/Contents/Resources/
+          create-dmg \
+            --volname "Papercraft" \
+            --volicon "distro/macos/papercraft.icns" \
+            --background "distro/macos/installer_background.png" \
+            --window-pos 200 120 \
+            --window-size 800 400 \
+            --icon-size 100 \
+            --app-drop-link 600 185 \
+            "Papercraft-${{ inputs.name }}-MacOS.dmg" \
+            "app_folder/"
+
       - name: Upload artifact MacOS
         uses: actions/upload-artifact@v4
         with:
-          name: Papercraft-${{ inputs.name }}-macOS-universal
-          path: Papercraft-${{ inputs.name }}-macOS-universal
+          name: Papercraft-${{ inputs.name }}-MacOS.dmg
+          path: Papercraft-${{ inputs.name }}-MacOS.dmg
           if-no-files-found: error
 

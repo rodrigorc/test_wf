@@ -48,9 +48,8 @@ jobs:
       - name: Download MacOS
         uses: actions/download-artifact@v4
         with:
-          name: Papercraft-${{ inputs.tag_name }}-macOS-universal
-
-      - name: Upload Linux to release
+          name: Papercraft-${{ inputs.tag_name }}-MacOS.dmg
+      - name: Upload all to release
         uses: svenstaro/upload-release-action@2.9.0
         with:
           tag: ${{ inputs.tag_name }}
