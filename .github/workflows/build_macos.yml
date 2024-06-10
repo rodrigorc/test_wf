@@ -35,13 +35,13 @@ jobs:
           cargo build --release --target=aarch64-apple-darwin
       - name: Build DMG
         run: |
-          mkdir -p app_folder/Papercraft/Papercraft.app/Contents/MacOS
-          mkdir -p app_folder/Papercraft/Papercraft.app/Contents/Resources
+          mkdir -p app_folder/Papercraft.app/Contents/MacOS
+          mkdir -p app_folder/Papercraft.app/Contents/Resources
           lipo -create target/aarch64-apple-darwin/release/papercraft target/x86_64-apple-darwin/release/papercraft -output \
-            app_folder/Papercraft/Papercraft.app/Contents/MacOS/Papercraft
-          cp distro/macos/PkgInfo app_folder/Papercraft/Papercraft.app/Contents/
-          cp distro/macos/Info.plist app_folder/Papercraft/Papercraft.app/Contents/
-          cp distro/macos/papercraft.icns app_folder/Papercraft/Papercraft.app/Contents/Resources/Papercraft.icns
+            app_folder/Papercraft.app/Contents/MacOS/Papercraft
+          cp distro/macos/PkgInfo app_folder/Papercraft.app/Contents/
+          cp distro/macos/Info.plist app_folder/Papercraft.app/Contents/
+          cp distro/macos/papercraft.icns app_folder/Papercraft.app/Contents/Resources/Papercraft.icns
           create-dmg \
             --volname "Papercraft" \
             --volicon "distro/macos/papercraft.icns" \
@@ -50,7 +50,7 @@ jobs:
             --window-size 800 400 \
             --icon-size 100 \
             --icon "Papercraft.app" 200 190 \
-            --hide-extension "Papercraft\/Papercraft.app" \
+            --hide-extension "Papercraft.app" \
             --app-drop-link 600 185 \
             "Papercraft-${{ inputs.name }}-MacOS.dmg" \
             "app_folder/"
