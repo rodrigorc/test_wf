@@ -5,13 +5,13 @@
   <key>CFBundleGetInfoString</key>
   <string>Papercraft</string>
   <key>CFBundleExecutable</key>
-  <string>papercraft</string>
+  <string>Papercraft</string>
   <key>CFBundleIdentifier</key>
   <string>com.rodrigorc.papercraft</string>
   <key>CFBundleName</key>
-  <string>papercraft</string>
+  <string>Papercraft</string>
   <key>CFBundleIconFile</key>
-  <string>papercraft.icns</string>
+  <string>Papercraft.icns</string>
   <key>CFBundleShortVersionString</key>
   <string>1.00</string>
   <key>CFBundleInfoDictionaryVersion</key>
