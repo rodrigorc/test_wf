@@ -38,10 +38,10 @@ jobs:
           mkdir -p app_folder/Papercraft/Papercraft.app/Contents/MacOS
           mkdir -p app_folder/Papercraft/Papercraft.app/Contents/Resources
           lipo -create target/aarch64-apple-darwin/release/papercraft target/x86_64-apple-darwin/release/papercraft -output \
-            app_folder/Papercraft/Papercraft.app/Contents/MacOS/papercraft
+            app_folder/Papercraft/Papercraft.app/Contents/MacOS/Papercraft
           cp distro/macos/PkgInfo app_folder/Papercraft/Papercraft.app/Contents/
           cp distro/macos/Info.plist app_folder/Papercraft/Papercraft.app/Contents/
-          cp distro/macos/papercraft.icns app_folder/Papercraft/Papercraft.app/Contents/Resources/
+          cp distro/macos/papercraft.icns app_folder/Papercraft/Papercraft.app/Contents/Resources/Papercraft.icns
           create-dmg \
             --volname "Papercraft" \
             --volicon "distro/macos/papercraft.icns" \
