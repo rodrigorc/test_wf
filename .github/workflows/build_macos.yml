@@ -49,8 +49,8 @@ jobs:
             --window-pos 200 120 \
             --window-size 800 400 \
             --icon-size 100 \
-            --icon "Papercraft/Papercraft.app" 200 190 \
-            --hide-extension "Papercraft.app" \
+            --icon "Papercraft\/Papercraft.app" 200 190 \
+            --hide-extension "Papercraft\/Papercraft.app" \
             --app-drop-link 600 185 \
             "Papercraft-${{ inputs.name }}-MacOS.dmg" \
             "app_folder/"
